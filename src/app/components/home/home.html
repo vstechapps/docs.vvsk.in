@@ -1,0 +1,22 @@
+<div class="home-container">
+    <div class="breadcrumb">
+        <span (click)="loadContents('')" class="crumb root">Home</span>
+        <span *ngIf="currentPath"> / {{ currentPath }}</span>
+    </div>
+
+    <div class="content-grid" *ngIf="!loading; else loader">
+        <div class="grid-item" *ngFor="let item of items" (click)="openItem(item)">
+            <div class="icon">{{ getIcon(item) }}</div>
+            <div class="name">{{ item.name }}</div>
+        </div>
+        <div *ngIf="items.length === 0" class="empty-state">
+            No files found.
+        </div>
+    </div>
+
+    <ng-template #loader>
+        <div class="loader">Loading...</div>
+    </ng-template>
+
+    <app-viewer *ngIf="selectedFile" [file]="selectedFile" (close)="closeViewer()"></app-viewer>
+</div>
