@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href /docs.vvsk.in/ && node scripts/move-files.js",
+    "build": "ng build && node scripts/move-files.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
