@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Item } from '../../models';
 
 @Component({
   selector: 'app-viewer',
@@ -7,7 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: false
 })
 export class Viewer {
-  @Input() file: any;
+  @Input() file: Item | null = null;
   @Output() close = new EventEmitter<void>();
 
   onClose() {
@@ -15,7 +16,7 @@ export class Viewer {
   }
 
   get isPdf(): boolean {
-    return this.file?.name.endsWith('.pdf');
+    return this.file?.name.endsWith('.pdf') ?? false;
   }
 
   get isImage(): boolean {
@@ -27,6 +28,6 @@ export class Viewer {
   }
 
   get downloadUrl(): string {
-    return this.file?.download_url;
+    return this.file?.download_url ?? '';
   }
 }

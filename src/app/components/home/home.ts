@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Github } from '../../services/github';
+import { Item } from '../../models';
 
 @Component({
   selector: 'app-home',
@@ -8,33 +9,37 @@ import { Github } from '../../services/github';
   standalone: false
 })
 export class Home implements OnInit {
-  items: any[] = [];
+  items: Item[] = [];
   currentPath: string = '';
-  loading: boolean = false;
-  selectedFile: any = null;
+  loading: boolean = true;
+  selectedFile: Item | null = null;
 
-  constructor(private githubService: Github) { }
+  constructor(private githubService: Github, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.loadContents();
+    this.loadContents(this.githubService.DEFAULT_PATH);
   }
 
-  loadContents(path: string = '') {
+  loadContents(path?: string) {
+    const targetPath = path || this.githubService.DEFAULT_PATH;
     this.loading = true;
-    this.currentPath = path;
-    this.githubService.getContents(path).subscribe({
+    this.currentPath = targetPath;
+    this.githubService.getContents(targetPath).subscribe({
       next: (data) => {
         this.items = data;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching contents', err);
+        alert("Error fetching contents");
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
-  openItem(item: any) {
+  openItem(item: Item) {
     if (item.type === 'dir') {
       this.loadContents(item.path);
     } else {
@@ -46,7 +51,23 @@ export class Home implements OnInit {
     this.selectedFile = null;
   }
 
-  getIcon(item: any): string {
+  get breadcrumbSegments(): { name: string, path: string }[] {
+    const segments: { name: string, path: string }[] = [];
+    const defaultPath = this.githubService.DEFAULT_PATH;
+    segments.push({ name: 'Home', path: defaultPath });
+
+    if (this.currentPath && this.currentPath !== defaultPath) {
+      const parts = this.currentPath.replace(defaultPath + '/', '').split('/');
+      let currentPathBuild = defaultPath;
+      parts.forEach(part => {
+        currentPathBuild += '/' + part;
+        segments.push({ name: part, path: currentPathBuild });
+      });
+    }
+    return segments;
+  }
+
+  getIcon(item: Item): string {
     if (item.type === 'dir') return '📁';
     if (item.name.endsWith('.pdf')) return '📄';
     if (item.name.match(/\.(jpg|jpeg|png|gif)$/i)) return '🖼️';

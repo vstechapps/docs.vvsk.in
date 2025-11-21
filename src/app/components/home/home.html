@@ -1,22 +1,33 @@
 <div class="home-container">
-    <div class="breadcrumb">
-        <span (click)="loadContents('')" class="crumb root">Home</span>
-        <span *ngIf="currentPath"> / {{ currentPath }}</span>
+    <div class="breadcrumb-container">
+        <div class="breadcrumb">
+            <ng-container *ngFor="let segment of breadcrumbSegments; let last = last">
+                <span class="crumb" [class.active]="last" (click)="!last && loadContents(segment.path)">
+                    {{ segment.name }}
+                </span>
+                <span class="separator" *ngIf="!last">/</span>
+            </ng-container>
+        </div>
     </div>
 
-    <div class="content-grid" *ngIf="!loading; else loader">
-        <div class="grid-item" *ngFor="let item of items" (click)="openItem(item)">
-            <div class="icon">{{ getIcon(item) }}</div>
-            <div class="name">{{ item.name }}</div>
+    <div class="content-grid" *ngIf="loading==false">
+        <div class="grid-item" *ngFor="let item of items" (click)="openItem(item)" tabindex="0">
+            <div class="card-content">
+                <div class="icon-wrapper">
+                    <span class="icon">{{ getIcon(item) }}</span>
+                </div>
+                <div class="info">
+                    <div class="name" [title]="item.name">{{ item.name }}</div>
+                    <div class="type">{{ item.type === 'dir' ? 'Folder' : 'File' }}</div>
+                </div>
+            </div>
         </div>
         <div *ngIf="items.length === 0" class="empty-state">
-            No files found.
+            <div class="empty-icon">📂</div>
+            <p>No files found in this directory.</p>
         </div>
     </div>
-
-    <ng-template #loader>
-        <div class="loader">Loading...</div>
-    </ng-template>
+    <div class="loader" *ngIf="loading==true">Loading...</div>
 
     <app-viewer *ngIf="selectedFile" [file]="selectedFile" (close)="closeViewer()"></app-viewer>
 </div>
