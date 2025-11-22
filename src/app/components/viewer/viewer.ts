@@ -30,4 +30,20 @@ export class Viewer {
   get downloadUrl(): string {
     return this.file?.download_url ?? '';
   }
+
+  showSigninPopup = false;
+
+  onDownloadClick() {
+    this.showSigninPopup = true;
+  }
+
+  closeSigninPopup() {
+    this.showSigninPopup = false;
+  }
+
+  onSignin() {
+    // TODO: Implement actual Google Sign-In
+    console.log('Sign in with Google clicked');
+    this.closeSigninPopup();
+  }
 }

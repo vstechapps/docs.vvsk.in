@@ -8,13 +8,15 @@ import { App } from './app';
 import { Header } from './components/header/header';
 import { Home } from './components/home/home';
 import { Viewer } from './components/viewer/viewer';
+import { SigninPopup } from './components/signin-popup/signin-popup';
 
 @NgModule({
   declarations: [
     App,
     Header,
     Home,
-    Viewer
+    Viewer,
+    SigninPopup
   ],
   imports: [
     BrowserModule,

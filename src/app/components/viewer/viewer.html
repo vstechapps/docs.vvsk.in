@@ -2,7 +2,13 @@
     <div class="viewer-content" (click)="$event.stopPropagation()">
         <div class="viewer-header">
             <span class="file-name">{{ file?.name }}</span>
-            <button class="close-btn" (click)="onClose()">✕</button>
+            <div class="actions">
+                <button class="download-btn" (click)="onDownloadClick()">
+                    <span class="material-icons">download</span>
+                    Download
+                </button>
+                <button class="close-btn" (click)="onClose()">✕</button>
+            </div>
         </div>
         <div class="viewer-body">
             <pdf-viewer *ngIf="isPdf" [src]="downloadUrl" [render-text]="true" [original-size]="false"
@@ -12,8 +18,9 @@
             <video *ngIf="isVideo" [src]="downloadUrl" controls class="preview-video"></video>
             <div *ngIf="!isPdf && !isImage && !isVideo" class="unsupported">
                 <p>Preview not available for this file type.</p>
-                <a [href]="downloadUrl" target="_blank" class="download-link">Download</a>
+                <button class="download-link" (click)="onDownloadClick()">Download</button>
             </div>
         </div>
     </div>
+    <app-signin-popup *ngIf="showSigninPopup" (close)="closeSigninPopup()" (signin)="onSignin()"></app-signin-popup>
 </div>

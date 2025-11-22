@@ -26,7 +26,12 @@ export class Home implements OnInit {
     this.currentPath = targetPath;
     this.githubService.getContents(targetPath).subscribe({
       next: (data) => {
-        this.items = data;
+        this.items = data.sort((a, b) => {
+          if (a.type === b.type) {
+            return a.name.localeCompare(b.name);
+          }
+          return a.type === 'dir' ? -1 : 1;
+        });
         this.loading = false;
         this.cdr.detectChanges();
       },

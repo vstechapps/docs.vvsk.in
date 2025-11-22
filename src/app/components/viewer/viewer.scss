@@ -58,25 +58,55 @@ $transition-speed: 0.3s;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 margin-right: 16px;
+                flex: 1;
             }
 
-            .close-btn {
-                background: none;
-                border: none;
-                font-size: 24px;
-                cursor: pointer;
-                color: $text-secondary;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
+            .actions {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                transition: background-color 0.2s;
+                gap: 12px;
 
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.05);
-                    color: $text-primary;
+                .download-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    background-color: $primary-color;
+                    color: #fff;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                    font-family: inherit;
+
+                    &:hover {
+                        background-color: darken($primary-color, 5%);
+                    }
+
+                    .material-icons {
+                        font-size: 18px;
+                    }
+                }
+
+                .close-btn {
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: $text-secondary;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color 0.2s;
+
+                    &:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                        color: $text-primary;
+                    }
                 }
             }
         }
@@ -120,8 +150,12 @@ $transition-speed: 0.3s;
                     background: $primary-color;
                     color: #fff;
                     text-decoration: none;
+                    border: none;
                     border-radius: 24px;
                     font-weight: 500;
+                    cursor: pointer;
+                    font-family: inherit;
+                    font-size: 14px;
                     transition: background-color 0.2s, transform 0.2s;
 
                     &:hover {
