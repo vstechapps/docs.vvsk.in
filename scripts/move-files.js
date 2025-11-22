@@ -17,6 +17,14 @@ try {
 
         fs.renameSync(distPath, docsPath);
         console.log('Successfully moved build artifacts from dist/docs-vvsk-in/browser to docs.');
+
+        const indexPath = path.join(docsPath, 'index.html');
+        const notFoundPath = path.join(docsPath, '404.html');
+
+        if (fs.existsSync(indexPath)) {
+            fs.copyFileSync(indexPath, notFoundPath);
+            console.log('Successfully copied index.html to 404.html');
+        }
     } else {
         console.error('Build directory not found:', distPath);
         process.exit(1);
