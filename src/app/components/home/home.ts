@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Github } from '../../services/github';
 import { Item } from '../../models';
 
@@ -14,10 +15,56 @@ export class Home implements OnInit {
   loading: boolean = true;
   selectedFile: Item | null = null;
 
-  constructor(private githubService: Github, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private githubService: Github,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
-    this.loadContents(this.githubService.DEFAULT_PATH);
+    this.route.params.subscribe(params => {
+      const path = params['path'];
+      if (path) {
+        this.handleDeepLink(decodeURIComponent(path));
+      } else {
+        this.loadContents(this.githubService.DEFAULT_PATH);
+      }
+    });
+  }
+
+  handleDeepLink(fullPath: string) {
+    // Determine parent directory to load
+    const lastSlashIndex = fullPath.lastIndexOf('/');
+    const parentPath = lastSlashIndex > 0 ? fullPath.substring(0, lastSlashIndex) : this.githubService.DEFAULT_PATH;
+
+    this.loading = true;
+    this.currentPath = parentPath;
+
+    this.githubService.getContents(parentPath).subscribe({
+      next: (data) => {
+        this.items = data.sort((a, b) => {
+          if (a.type === b.type) {
+            return a.name.localeCompare(b.name);
+          }
+          return a.type === 'dir' ? -1 : 1;
+        });
+
+        // Find and open the specific file
+        const fileToOpen = this.items.find(item => item.path === fullPath);
+        if (fileToOpen) {
+          this.selectedFile = fileToOpen;
+        }
+
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching contents', err);
+        alert("Error fetching contents");
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   loadContents(path?: string) {

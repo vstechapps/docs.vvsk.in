@@ -7,5 +7,18 @@ import { Component } from '@angular/core';
   styleUrl: './header.scss',
 })
 export class Header {
+  isDropdownOpen = false;
 
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown() {
+    this.isDropdownOpen = false;
+  }
+
+  onSignin() {
+    console.log('Sign in clicked from header');
+    this.closeDropdown();
+  }
 }

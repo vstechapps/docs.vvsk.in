@@ -97,6 +97,7 @@ $avatar-bg: #8e24aa;
     display: flex;
     justify-content: flex-end;
     flex-shrink: 0;
+    position: relative;
 
     .avatar {
       width: 32px;
@@ -115,5 +116,103 @@ $avatar-bg: #8e24aa;
         transform: scale(1.1);
       }
     }
+
+    .dropdown-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 90;
+      cursor: default;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 48px;
+      right: 0;
+      width: 300px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 0.2s ease-out;
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .avatar-large {
+          width: 80px;
+          height: 80px;
+          background-color: $avatar-bg;
+          color: #fff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 40px;
+          margin-bottom: 12px;
+        }
+
+        .details {
+          text-align: center;
+
+          .name {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            color: $text-primary;
+            margin-bottom: 4px;
+          }
+
+          .email {
+            display: block;
+            font-size: 14px;
+            color: $text-secondary;
+          }
+        }
+      }
+
+      .actions {
+        width: 100%;
+
+        .signin-btn {
+          width: 100%;
+          padding: 10px 24px;
+          background: #fff;
+          color: $primary-color;
+          border: 1px solid $border-color;
+          border-radius: 4px;
+          font-weight: 500;
+          cursor: pointer;
+          font-family: inherit;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: rgba($primary-color, 0.04);
+            border-color: $primary-color;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

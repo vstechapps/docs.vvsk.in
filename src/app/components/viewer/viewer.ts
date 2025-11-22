@@ -32,9 +32,29 @@ export class Viewer {
   }
 
   showSigninPopup = false;
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
 
   onDownloadClick() {
+    this.closeMenu();
     this.showSigninPopup = true;
+  }
+
+  onShareClick() {
+    this.closeMenu();
+    if (this.file) {
+      const shareUrl = `${window.location.origin}/open/${encodeURIComponent(this.file.path)}`;
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link copied to clipboard!');
+      });
+    }
   }
 
   closeSigninPopup() {

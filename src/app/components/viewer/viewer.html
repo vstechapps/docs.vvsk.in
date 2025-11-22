@@ -3,10 +3,22 @@
         <div class="viewer-header">
             <span class="file-name">{{ file?.name }}</span>
             <div class="actions">
-                <button class="download-btn" (click)="onDownloadClick()">
-                    <span class="material-icons">download</span>
-                    Download
-                </button>
+                <div class="menu-container">
+                    <button class="menu-btn" (click)="toggleMenu()">
+                        <span class="material-icons">more_vert</span>
+                    </button>
+                    <div class="menu-backdrop" *ngIf="isMenuOpen" (click)="closeMenu()"></div>
+                    <div class="dropdown-menu" *ngIf="isMenuOpen">
+                        <button class="menu-item" (click)="onShareClick()">
+                            <span class="material-icons">share</span>
+                            Share
+                        </button>
+                        <button class="menu-item" (click)="onDownloadClick()">
+                            <span class="material-icons">download</span>
+                            Download
+                        </button>
+                    </div>
+                </div>
                 <button class="close-btn" (click)="onClose()">✕</button>
             </div>
         </div>
