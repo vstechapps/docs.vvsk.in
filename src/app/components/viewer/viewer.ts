@@ -33,6 +33,19 @@ export class Viewer {
 
   showSigninPopup = false;
   isMenuOpen = false;
+  showToast = false;
+  loading = true;
+
+  onPdfLoadComplete() {
+    this.loading = false;
+  }
+
+  showToastNotification() {
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -52,7 +65,7 @@ export class Viewer {
     if (this.file) {
       const shareUrl = `${window.location.origin}/open?path=${encodeURIComponent(this.file.path)}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert('Link copied to clipboard!');
+        this.showToastNotification();
       });
     }
   }

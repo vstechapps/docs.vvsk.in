@@ -23,8 +23,12 @@
             </div>
         </div>
         <div class="viewer-body">
+            <div *ngIf="loading && isPdf" class="loading-container">
+                <div class="spinner"></div>
+                <span>Loading PDF...</span>
+            </div>
             <pdf-viewer *ngIf="isPdf" [src]="downloadUrl" [render-text]="true" [original-size]="false"
-                style="width: 100%; height: 100%; display: block;">
+                style="width: 100%; height: 100%; display: block;" (after-load-complete)="onPdfLoadComplete()">
             </pdf-viewer>
             <img *ngIf="isImage" [src]="downloadUrl" alt="file" class="preview-image">
             <video *ngIf="isVideo" [src]="downloadUrl" controls class="preview-video"></video>
@@ -35,4 +39,5 @@
         </div>
     </div>
     <app-signin-popup *ngIf="showSigninPopup" (close)="closeSigninPopup()" (signin)="onSignin()"></app-signin-popup>
+    <div class="toast" *ngIf="showToast">Link copied to clipboard</div>
 </div>
