@@ -22,7 +22,7 @@ export class Home implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.queryParams.subscribe(params => {
       const path = params['path'];
       if (path) {
         this.handleDeepLink(decodeURIComponent(path));

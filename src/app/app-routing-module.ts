@@ -4,7 +4,7 @@ import { Home } from './components/home/home';
 
 const routes: Routes = [
   { path: '', component: Home },
-  { path: 'open/:path', component: Home },
+  { path: 'open', component: Home },
   { path: '**', redirectTo: '' }
 ];
 

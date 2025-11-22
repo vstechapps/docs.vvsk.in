@@ -50,7 +50,7 @@ export class Viewer {
   onShareClick() {
     this.closeMenu();
     if (this.file) {
-      const shareUrl = `${window.location.origin}/open/${encodeURIComponent(this.file.path)}`;
+      const shareUrl = `${window.location.origin}/open?path=${encodeURIComponent(this.file.path)}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         alert('Link copied to clipboard!');
       });
