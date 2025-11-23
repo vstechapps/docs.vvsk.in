@@ -8,5 +8,6 @@ export const environment = {
         messagingSenderId: "683857452414",
         appId: "1:683857452414:web:41b3da4368a3df73d5272f",
         measurementId: "G-BCJ69CN9L7"
-    }
+    },
+    githubToken: ''
 };

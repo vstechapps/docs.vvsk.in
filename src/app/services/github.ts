@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Item } from '../models';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -19,8 +21,17 @@ export class Github {
     const url = `${this.baseUrl}/${path}`;
     return this.http.get<Item[]>(url);
   }
+
   searchFiles(query: string): Observable<any> {
     const url = `https://api.github.com/search/code?q=${query}+repo:${this.GIT_USER}/${this.GIT_REPO}+path:${this.DEFAULT_PATH}`;
-    return this.http.get(url);
+    const headers: any = {
+      'Accept': 'application/vnd.github.v3+json'
+    };
+
+    if (environment.githubToken) {
+      headers['Authorization'] = `token ${environment.githubToken}`;
+    }
+
+    return this.http.get(url, { headers });
   }
 }

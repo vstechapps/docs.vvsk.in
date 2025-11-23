@@ -1,10 +1,4 @@
 <div class="home-container">
-    <div class="search-container">
-        <div class="search-bar">
-            <i class="search-icon">🔍</i>
-            <input type="text" placeholder="Search in Drive" class="search-input" (keyup.enter)="onSearch($event)">
-        </div>
-    </div>
 
     <div class="breadcrumb-container">
         <div class="breadcrumb">
@@ -14,6 +8,13 @@
                 </span>
                 <span class="separator" *ngIf="!last">/</span>
             </ng-container>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <i class="search-icon">🔍</i>
+            <input type="text" placeholder="Search in Drive" class="search-input" (keyup.enter)="onSearch($event)">
         </div>
     </div>
 
