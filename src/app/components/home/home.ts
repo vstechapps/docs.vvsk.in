@@ -119,6 +119,34 @@ export class Home implements OnInit {
     return segments;
   }
 
+  onSearch(event: any) {
+    const query = event.target.value;
+    if (!query) {
+      this.loadContents(this.currentPath);
+      return;
+    }
+
+    this.loading = true;
+    this.githubService.searchFiles(query).subscribe({
+      next: (response: any) => {
+        // Map search results to Item format
+        this.items = response.items.map((item: any) => ({
+          name: item.name,
+          path: item.path,
+          type: 'file', // Search API mostly returns files
+          download_url: item.html_url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
+        }));
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error searching files', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   getIcon(item: Item): string {
     if (item.type === 'dir') return '📁';
     if (item.name.endsWith('.pdf')) return '📄';

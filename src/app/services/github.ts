@@ -19,4 +19,8 @@ export class Github {
     const url = `${this.baseUrl}/${path}`;
     return this.http.get<Item[]>(url);
   }
+  searchFiles(query: string): Observable<any> {
+    const url = `https://api.github.com/search/code?q=${query}+repo:${this.GIT_USER}/${this.GIT_REPO}+path:${this.DEFAULT_PATH}`;
+    return this.http.get(url);
+  }
 }
