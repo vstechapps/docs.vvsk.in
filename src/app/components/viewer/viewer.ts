@@ -1,5 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Item } from '../../models';
+import { FirestoreService } from '../../services/firestore';
+import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-viewer',
@@ -7,9 +9,19 @@ import { Item } from '../../models';
   styleUrls: ['./viewer.scss'],
   standalone: false
 })
-export class Viewer {
+export class Viewer implements OnInit {
   @Input() file: Item | null = null;
   @Output() close = new EventEmitter<void>();
+
+  user: User | null = null;
+
+  constructor(private firestoreService: FirestoreService) { }
+
+  ngOnInit() {
+    this.firestoreService.user$.subscribe(user => {
+      this.user = user;
+    });
+  }
 
   onClose() {
     this.close.emit();
@@ -57,7 +69,25 @@ export class Viewer {
 
   onDownloadClick() {
     this.closeMenu();
-    this.showSigninPopup = true;
+    if (this.user) {
+      // User is logged in, proceed with download
+      this.firestoreService.log('download', {
+        fileName: this.file?.name,
+        filePath: this.file?.path
+      });
+
+      // Trigger download
+      const link = document.createElement('a');
+      link.href = this.downloadUrl;
+      link.target = '_blank';
+      link.download = this.file?.name || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      // User is not logged in, show signin popup
+      this.showSigninPopup = true;
+    }
   }
 
   onShareClick() {
@@ -74,9 +104,14 @@ export class Viewer {
     this.showSigninPopup = false;
   }
 
-  onSignin() {
-    // TODO: Implement actual Google Sign-In
-    console.log('Sign in with Google clicked');
-    this.closeSigninPopup();
+  async onSignin() {
+    try {
+      await this.firestoreService.login();
+      this.closeSigninPopup();
+      // Optionally trigger download immediately after login
+      this.onDownloadClick();
+    } catch (error) {
+      console.error('Login failed', error);
+    }
   }
 }
