@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Item } from '../../models';
 import { FirestoreService } from '../../services/firestore';
 import { User } from 'firebase/auth';
@@ -15,7 +15,7 @@ export class Viewer implements OnInit {
 
   user: User | null = null;
 
-  constructor(private firestoreService: FirestoreService) { }
+  constructor(private firestoreService: FirestoreService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.firestoreService.user$.subscribe(user => {
@@ -54,8 +54,10 @@ export class Viewer implements OnInit {
 
   showToastNotification() {
     this.showToast = true;
+    this.cdr.detectChanges();
     setTimeout(() => {
       this.showToast = false;
+      this.cdr.detectChanges();
     }, 3000);
   }
 

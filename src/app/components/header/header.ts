@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FirestoreService } from '../../services/firestore';
 import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
@@ -14,11 +14,12 @@ export class Header implements OnInit, OnDestroy {
   user: User | null = null;
   private userSub: Subscription | null = null;
 
-  constructor(private firestoreService: FirestoreService) { }
+  constructor(private firestoreService: FirestoreService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.userSub = this.firestoreService.user$.subscribe(user => {
       this.user = user;
+      this.cdr.detectChanges();
     });
   }
 
