@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FirestoreService } from '../../services/firestore';
+import { User } from 'firebase/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -6,8 +9,24 @@ import { Component } from '@angular/core';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class Header {
+export class Header implements OnInit, OnDestroy {
   isDropdownOpen = false;
+  user: User | null = null;
+  private userSub: Subscription | null = null;
+
+  constructor(private firestoreService: FirestoreService) { }
+
+  ngOnInit() {
+    this.userSub = this.firestoreService.user$.subscribe(user => {
+      this.user = user;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSub) {
+      this.userSub.unsubscribe();
+    }
+  }
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -17,8 +36,25 @@ export class Header {
     this.isDropdownOpen = false;
   }
 
-  onSignin() {
-    console.log('Sign in clicked from header');
-    this.closeDropdown();
+  async onSignin() {
+    try {
+      await this.firestoreService.login();
+      this.closeDropdown();
+    } catch (error) {
+      console.error('Login failed', error);
+    }
+  }
+
+  async onSignout() {
+    try {
+      await this.firestoreService.logout();
+      this.closeDropdown();
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  }
+
+  get userInitial(): string {
+    return this.user?.displayName ? this.user.displayName.charAt(0).toUpperCase() : 'G';
   }
 }
