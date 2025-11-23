@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FirestoreService } from '../../services/firestore';
+import { SearchService } from '../../services/search';
 import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
 
@@ -14,7 +15,11 @@ export class Header implements OnInit, OnDestroy {
   user: User | null = null;
   private userSub: Subscription | null = null;
 
-  constructor(private firestoreService: FirestoreService, private cdr: ChangeDetectorRef) { }
+  constructor(
+    private firestoreService: FirestoreService,
+    private searchService: SearchService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit() {
     this.userSub = this.firestoreService.user$.subscribe(user => {
@@ -61,6 +66,11 @@ export class Header implements OnInit, OnDestroy {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  onSearch(event: any) {
+    const query = event.target.value;
+    this.searchService.search(query);
   }
 
   get userInitial(): string {

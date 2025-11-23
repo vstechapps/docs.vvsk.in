@@ -1,7 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Github } from '../../services/github';
+import { SearchService } from '../../services/search';
 import { Item } from '../../models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -9,14 +11,17 @@ import { Item } from '../../models';
   styleUrls: ['./home.scss'],
   standalone: false
 })
-export class Home implements OnInit {
+export class Home implements OnInit, OnDestroy {
   items: Item[] = [];
   currentPath: string = '';
   loading: boolean = true;
   selectedFile: Item | null = null;
+  private searchSub: Subscription | null = null;
+  private loadingSub: Subscription | null = null;
 
   constructor(
     private githubService: Github,
+    private searchService: SearchService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute
   ) { }
@@ -30,6 +35,41 @@ export class Home implements OnInit {
         this.loadContents(this.githubService.DEFAULT_PATH);
       }
     });
+
+    this.searchSub = this.searchService.results$.subscribe(results => {
+      if (results) {
+        this.items = results;
+        this.cdr.detectChanges();
+      } else if (!this.loading) {
+        // If search is cleared (results is null) and we are not initially loading, reload current path
+        // Check if we are not already loading to avoid double fetch on init
+        if (this.currentPath) {
+          this.loadContents(this.currentPath);
+        }
+      }
+    });
+
+    this.loadingSub = this.searchService.loading$.subscribe(isLoading => {
+      // Only update loading from search service if a search is active or happening
+      // We don't want to overwrite local loading state if we are navigating folders
+      if (isLoading) {
+        this.loading = true;
+        this.cdr.detectChanges();
+      } else if (this.searchService.resultsValue) {
+        // If search finished and we have results
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.searchSub) {
+      this.searchSub.unsubscribe();
+    }
+    if (this.loadingSub) {
+      this.loadingSub.unsubscribe();
+    }
   }
 
   handleDeepLink(fullPath: string) {
@@ -71,6 +111,12 @@ export class Home implements OnInit {
     const targetPath = path || this.githubService.DEFAULT_PATH;
     this.loading = true;
     this.currentPath = targetPath;
+
+    // Clear search when navigating
+    // We only want to clear the search state in the service if we are manually navigating
+    // But here we might be called by the search clearing itself.
+    // Let's just load contents.
+
     this.githubService.getContents(targetPath).subscribe({
       next: (data) => {
         this.items = data.sort((a, b) => {
@@ -94,6 +140,7 @@ export class Home implements OnInit {
   openItem(item: Item) {
     if (item.type === 'dir') {
       this.loadContents(item.path);
+      this.searchService.clearSearch(); // Clear search when navigating into a folder
     } else {
       this.selectedFile = item;
     }
@@ -117,34 +164,6 @@ export class Home implements OnInit {
       });
     }
     return segments;
-  }
-
-  onSearch(event: any) {
-    const query = event.target.value;
-    if (!query) {
-      this.loadContents(this.currentPath);
-      return;
-    }
-
-    this.loading = true;
-    this.githubService.searchFiles(query).subscribe({
-      next: (response: any) => {
-        // Map search results to Item format
-        this.items = response.items.map((item: any) => ({
-          name: item.name,
-          path: item.path,
-          type: 'file', // Search API mostly returns files
-          download_url: item.html_url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
-        }));
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error searching files', err);
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
   }
 
   getIcon(item: Item): string {
