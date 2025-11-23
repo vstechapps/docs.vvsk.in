@@ -197,6 +197,21 @@ $avatar-bg: #8e24aa;
       .actions {
         width: 100%;
 
+        .loader-container {
+          display: flex;
+          justify-content: center;
+          padding: 10px 0;
+
+          .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba($primary-color, 0.1);
+            border-left-color: $primary-color;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+        }
+
         .signin-btn,
         .signout-btn {
           width: 100%;
@@ -229,14 +244,8 @@ $avatar-bg: #8e24aa;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }

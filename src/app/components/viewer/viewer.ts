@@ -104,7 +104,10 @@ export class Viewer implements OnInit {
     this.showSigninPopup = false;
   }
 
+  isSigningIn = false;
+
   async onSignin() {
+    this.isSigningIn = true;
     try {
       await this.firestoreService.login();
       this.closeSigninPopup();
@@ -112,6 +115,8 @@ export class Viewer implements OnInit {
       this.onDownloadClick();
     } catch (error) {
       console.error('Login failed', error);
+    } finally {
+      this.isSigningIn = false;
     }
   }
 }

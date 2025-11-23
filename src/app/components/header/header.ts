@@ -36,21 +36,29 @@ export class Header implements OnInit, OnDestroy {
     this.isDropdownOpen = false;
   }
 
+  isLoading = false;
+
   async onSignin() {
+    this.isLoading = true;
     try {
       await this.firestoreService.login();
       this.closeDropdown();
     } catch (error) {
       console.error('Login failed', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
   async onSignout() {
+    this.isLoading = true;
     try {
       await this.firestoreService.logout();
       this.closeDropdown();
     } catch (error) {
       console.error('Logout failed', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 

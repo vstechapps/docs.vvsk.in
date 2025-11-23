@@ -288,6 +288,98 @@ $transition-speed: 0.3s;
     }
 }
 
+.signin-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.2s ease-out;
+
+    .signin-popup {
+        background: #fff;
+        padding: 24px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        animation: slideUp 0.2s ease-out;
+
+        h3 {
+            margin: 0 0 12px;
+            color: $text-primary;
+            font-size: 20px;
+        }
+
+        p {
+            margin: 0 0 24px;
+            color: $text-secondary;
+            line-height: 1.5;
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+
+            .loader-container {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                padding: 5px 0;
+                position: static;
+                transform: none;
+                background: none;
+
+                .spinner {
+                    width: 24px;
+                    height: 24px;
+                    border: 3px solid rgba($primary-color, 0.1);
+                    border-left-color: $primary-color;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
+            }
+
+            button {
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                font-family: inherit;
+                transition: background-color 0.2s;
+
+                &.cancel-btn {
+                    background: none;
+                    color: $primary-color;
+
+                    &:hover {
+                        background: rgba($primary-color, 0.04);
+                    }
+                }
+
+                &.signin-btn {
+                    background: $primary-color;
+                    color: #fff;
+
+                    &:hover {
+                        background: darken($primary-color, 5%);
+                        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                    }
+                }
+            }
+        }
+    }
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);

@@ -27,8 +27,13 @@
         </div>
       </div>
       <div class="actions">
-        <button *ngIf="!user" class="signin-btn" (click)="onSignin()">Sign in</button>
-        <button *ngIf="user" class="signout-btn" (click)="onSignout()">Sign out</button>
+        <div *ngIf="isLoading" class="loader-container">
+          <div class="spinner"></div>
+        </div>
+        <ng-container *ngIf="!isLoading">
+          <button *ngIf="!user" class="signin-btn" (click)="onSignin()">Sign in</button>
+          <button *ngIf="user" class="signout-btn" (click)="onSignout()">Sign out</button>
+        </ng-container>
       </div>
     </div>
   </div>
